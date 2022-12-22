@@ -943,4 +943,14 @@ body {
   width: 29px;
   margin: auto;
 }
+
+.addCardBtn{
+  background-color: #000000;
+  color: #ffffff;
+  padding: 12px 24px;
+  width: 100%;
+  font-size: large;
+  border: none;
+  margin-bottom: 8px;
+}
 /*# sourceMappingURL=all.css.map */
