@@ -122,15 +122,14 @@ js_productList.addEventListener("click",(e) =>{
   e.preventDefault();
   let num = e.target.dataset.num;
   let id = product_ary[num].id;
-
-  // 抓 cart list 的數量
-  let cart_num = e.target.dataset.num;
-  let itemNum = cartList[cart_num].quantity;
-  itemNum += itemNum;
+  let itemNum =1;
+  cartList.map((item)=>{
+    if(id === item.product.id){
+      itemNum += item.quantity ;
+    }
+  })
   addCartItem(id,itemNum);
 })
-
-
 
 // （待修改：加入重複品項數字要增加）函式 => 加入購物車
 const addCartItem = (id,num) => {
