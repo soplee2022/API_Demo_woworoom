@@ -718,7 +718,7 @@ body {
   border-bottom: 1px solid #b9b9b9;
 }
 
-.shoppingCart-table tr:first-child,
+.shoppingCart-table ,
 .shoppingCart-table tr:last-child {
   border-bottom: 0;
 }
@@ -953,4 +953,15 @@ body {
   border: none;
   margin-bottom: 8px;
 }
+
+.delete-icons {
+  color: #6a33ff;
+  -webkit-transform: scale(1.5);
+  transform: scale(1.5);
+  border: none;
+  padding: 6px 20px;
+  margin-left: 10px;
+  font-size: 10px;
+}
 /*# sourceMappingURL=all.css.map */
+
