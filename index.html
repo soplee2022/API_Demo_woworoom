@@ -312,7 +312,7 @@
           </tr>
         </thead>
         <tbody class="js_carts">
-          <!-- <tr>
+          <tr class="hidden">
             <td>
               <div class="cardItem-title">
                 <img src="./images/HvT3zlU.png" alt="">
@@ -326,21 +326,23 @@
               <a href="#" class="material-icons">
                 clear
               </a>
-            </td> -->
+            </td>
+          </tr>
+        </tbody>
+        <tbody class="js_delete_all_carts">
+          <tr class="hidden">
+            <td>
+              <button class="delete-icons">刪除所有品項</button>
+            </td>
+            <td></td>
+            <td></td>
+            <td>
+              <p>總金額</p>
+            </td>
+            <td>NT$13,980</td>
           </tr>
         </tbody>
 
-        <tr>
-          <td>
-            <a href="#" class="discardAllBtn">刪除所有品項</a>
-          </td>
-          <td></td>
-          <td></td>
-          <td>
-            <p>總金額</p>
-          </td>
-          <td>NT$13,980</td>
-        </tr>
       </table>
     </div>
   </section>
@@ -452,6 +454,8 @@
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
   <script src="app.js"></script>
 
 </body>

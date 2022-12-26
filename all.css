@@ -963,5 +963,9 @@ body {
   margin-left: 10px;
   font-size: 10px;
 }
+
+.hidden{
+  display: none;
+}
 /*# sourceMappingURL=all.css.map */
 

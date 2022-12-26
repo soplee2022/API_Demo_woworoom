@@ -7,6 +7,7 @@ let js_productList = document.querySelector(".js_productList");
 let js_product_filter = document.querySelector(".js_product_filter");
 let js_carts = document.querySelector(".js_carts");
 let product_ary = [];
+let js_delete_all_carts = document.querySelector(".js_delete_all_carts");
 
 
 // ---------- 產品功能 ----------
@@ -76,12 +77,16 @@ js_product_filter.addEventListener("change",(e)=>{
 
 // ---------- 購物車功能 ----------
 let cartList = [];
+let cartList_obj = {};
+let final_total ;
 
 // 函式 => 取得購物車列表
 const getCartList = () => {
   axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`).
     then((res) => {
-      cartList = res.data.carts;
+      cartList = res.data.carts;  
+      cartList_obj = res.data;
+      final_total = cartList_obj.finalTotal;
       console.log(cartList);
       render_cart_list();
     })
@@ -89,18 +94,20 @@ const getCartList = () => {
 // 函式 => 設定購物車資訊
 const set_carts = (item,index) =>{
   const price = item.product.price.toLocaleString();
+
   let product_total = item.product.price * item.quantity;
   product_total = product_total.toLocaleString();
+  
   let set_carts = `<tr><td>
-  <div class="cardItem-title">
-    <img src="${item.product.images}" alt="">
-    <p>${item.product.title}</p>
-  </div>
-</td>
-<td>NT$${price}</td>
-<td>${item.quantity}</td>
-<td>NT$${product_total}</td>
-<td>
+    <div class="cardItem-title">
+      <img src="${item.product.images}" alt="">
+      <p>${item.product.title}</p>
+    </div>
+  </td>
+  <td>NT$${price}</td>
+  <td>${item.quantity}</td>
+  <td>NT$${product_total}</td>
+  <td>
   <button class="delete-icons" value="刪除" data-num="${index}">
     刪除
   </button>
@@ -108,13 +115,33 @@ const set_carts = (item,index) =>{
 
   return set_carts
 }
+// 函式 => 設定購物車總表
+const set_carts_total = () =>{
+  final_total = final_total.toLocaleString();
+  let set_carts_total = `<tr>
+  <td>
+    <button class="delete-icons">刪除所有品項</button>
+  </td>
+  <td></td>
+  <td></td>
+  <td>
+    <p>總金額</p>
+  </td>
+  <td>NT$${final_total}</td>
+</tr>`;
+
+return set_carts_total;
+}
 // 函式 => 渲染購物車列表
 const render_cart_list = () =>{
   let str_all = "";
+  let str_total = "";
   cartList.map((item,index)=>{
     str_all += set_carts(item,index);
+    str_total = set_carts_total();
   })
   js_carts.innerHTML = str_all;
+  js_delete_all_carts.innerHTML = str_total;
 }
 
 // 監聽 => 點擊加入購物車
@@ -123,15 +150,21 @@ js_productList.addEventListener("click",(e) =>{
   let num = e.target.dataset.num;
   let id = product_ary[num].id;
   let itemNum =1;
+  // 增加同商品購物車數量
   cartList.map((item)=>{
-    if(id === item.product.id){
-      itemNum += item.quantity ;
-    }
+    const checkId = id === item.product.id;
+    if(checkId){itemNum += item.quantity}
   })
+  // sweet alert (UX：減少等待期，通知綁在監聽)
+  swal({
+    title: "完成！",
+    text: "商品已加入購物車",
+    icon: "success",
+  });
   addCartItem(id,itemNum);
 })
 
-// （待修改：加入重複品項數字要增加）函式 => 加入購物車
+// 函式 => 加入購物車
 const addCartItem = (id,num) => {
   axios
   .post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`, {
@@ -143,7 +176,6 @@ const addCartItem = (id,num) => {
   .then((res) => {
     console.log(res.data);
     getCartList();
-    alert("商品已加入購物車")
   })
 }
 
@@ -154,7 +186,6 @@ const deleteCartItem = (cartId) =>{
   .then((res) =>{
       console.log(res.data);
       getCartList();
-      alert("商品已刪除")
     })
 }
 
@@ -164,16 +195,64 @@ js_carts.addEventListener("click",(e) =>{
   let num = e.target.dataset.num;
   let id = cartList[num].id;
   const deleteItem = e.target.value === '刪除';
-  deleteItem && deleteCartItem(id);
+
+  // sweet alert 確認是否刪除商品 (UX：減少等待期，通知綁在監聽)
+  if(deleteCartItem){
+    swal({
+      title: "確定要刪除商品？",
+      text: "商品從購物車移除後，你必須重新選擇數量、品項",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        swal("完成！商品已從購物車移除", {
+          icon: "success",
+        });
+        deleteCartItem(id);
+      } else {
+        swal("商品將保留在購物車內");
+      }
+    });
+  }
+
 })
 
-// 清除購物車內全部產品
-function deleteAllCartList() {
-  axios.delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`).
-    then(function (response) {
-      console.log(response.data);
+// 函式 => 清除購物車內全部產品
+const deleteAllCartList = () =>{
+  axios
+  .delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`)
+  .then((res) => {
+      console.log(res.data);
+      getCartList();
     })
 }
+
+js_delete_all_carts.addEventListener("click",(e) =>{
+  e.preventDefault();
+  // sweet alert 確認是否刪除商品 (UX：減少等待期，通知綁在監聽)
+  if(deleteCartItem){
+    swal({
+      title: "確定要刪除全部商品？",
+      text: "點擊確認後，購物車將被清空",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        swal("完成！購物車已清空", {
+          icon: "success",
+        });
+        deleteAllCartList();
+      } else {
+        swal("商品將保留在購物車內");
+      }
+    });
+  }
+  
+})
 
 
 // 送出購買訂單
