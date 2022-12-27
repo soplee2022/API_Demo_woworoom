@@ -761,7 +761,7 @@ body {
 .discardAllBtn {
   display: inline-block;
   text-decoration: none;
-  padding: 5px 15px;
+  padding: 5px 20px;
   color: #000000;
   border: 1.3px solid #000000;
   border-radius: 5px;
@@ -904,4 +904,9 @@ body {
 .orderTableWrap::-webkit-scrollbar {
   display: none;
 }
+
+.hidden{
+  display: none;
+}
+
 /*# sourceMappingURL=all.css.map */
