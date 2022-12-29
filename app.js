@@ -257,6 +257,7 @@ const order_tradeWay = document.querySelector('#tradeWay');
 
 // 監聽 => 填寫購買訂單
 js_order_section.addEventListener('click', (e) => {
+  e.preventDefault();
   // 寫入訂購資訊
   const name = order_name.value;
   const tel = order_tel.value;

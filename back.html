@@ -28,13 +28,19 @@
       </div>
   </nav>
   <!-- C3 圖表 -->
-  <section class="wrap">
+  <section class="wrap flex">
+    <div class="chart fel-col m-auto">
       <h2 class="section-title">全品項營收比重</h2>
-      <div id="chart"></div>
+      <div id="chart1" class="pie_size"></div>
+    </div>
+    <div class="chart fel-col m-auto">
+      <h2 class="section-title">全產品類別營收比重</h2>
+      <div id="chart2" class="pie_size"></div>      
+    </div>
   </section>
   <!-- 訂單列表 -->
   <section class="wrap orderPage-list">
-      <button class="discardAllBtn">清除全部訂單</button>
+      <button class="discardAllBtn js_deleteAllOrderBtn" value="deleteAllOrderBtn">清除全部訂單</button>
       <div class="orderTableWrap">
           <table class="orderPage-table">
               <thead>

@@ -2,11 +2,13 @@
 /* eslint-disable camelcase */
 const api_path = 'sop001';
 const token = 'QAUmGOmqGMhc1e4clUy24HWNNmn1';
-
+// eslint-disable-next-line quotes
+const no_orders = `<h2 class="no_orders"> 目前無訂單 </h2>`;
 let newData = [];
 
 // ---------- 後台：訂單功能 ----------
 const js_orderList = document.querySelector('.js_orderList');
+const js_deleteAllOrderBtn = document.querySelector('.js_deleteAllOrderBtn');
 // 函式 => 設定訂單資訊
 const set_order_list = (item, index) => {
   const { user } = item;
@@ -72,9 +74,11 @@ const getOrderList = () => {
     .then((res) => {
       newData = res.data;
       orders_ary = newData.orders;
+      const no_data = orders_ary.length === 0;
       console.log(newData);
       call_data();
-      render_order_list();
+      // eslint-disable-next-line no-unused-expressions
+      no_data ? js_orderList.innerHTML = no_orders : render_order_list();
     });
 };
 
@@ -156,9 +160,9 @@ const editOrderList = (id) => {
     });
 };
 
-// 刪除全部訂單
+// 函式 => 刪除全部訂單
 // eslint-disable-next-line no-unused-vars
-function deleteAllOrder() {
+const deleteAllOrder = () => {
   axios
     .delete(
       `https://livejs-api.hexschool.io/api/livejs/v1/admin/${api_path}/orders`,
@@ -168,10 +172,38 @@ function deleteAllOrder() {
         },
       },
     )
-    .then((response) => {
-      console.log(response.data);
+    .then((res) => {
+      console.log(res.data);
+      getOrderList();
     });
-}
+};
+
+// 監聽 => 點擊刪除全部訂單
+js_deleteAllOrderBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  const deleteAll_btn = e.target.value === 'deleteAllOrderBtn';
+
+  if (deleteAll_btn) {
+    // sweet alert 確認是否修改訂單狀態
+    swal({
+      title: '請確認',
+      text: '點擊後將刪除所有訂單',
+      icon: 'warning',
+      buttons: true,
+      dangerMode: true,
+    })
+      .then((willDelete) => {
+        if (willDelete) {
+          swal('完成！已刪除所有訂單', {
+            icon: 'success',
+          });
+          deleteAllOrder();
+        } else {
+          swal('已保留目前訂單');
+        }
+      });
+  }
+});
 
 // 函式 => axios 刪除特定訂單
 // eslint-disable-next-line no-unused-vars
@@ -192,23 +224,44 @@ const deleteOrderItem = (id) => {
 };
 
 // C3.js
-// const chart = c3.generate({
-//   bindto: '#chart', // HTML 元素綁定
-//   data: {
-//     type: 'pie',
-//     columns: [
-//       ['Louvre 雙人床架', 1],
-//       ['Antony 雙人床架', 2],
-//       ['Anty 雙人床架', 3],
-//       ['其他', 4],
-//     ],
-//     colors: {
-//       'Louvre 雙人床架': '#DACBFF',
-//       'Antony 雙人床架': '#9D7FEA',
-//       'Anty 雙人床架': '#5434A7',
-//       其他: '#301E5F',
-//     },
-//   },
-// });
+// eslint-disable-next-line no-unused-vars
+const chart1 = c3.generate({
+  bindto: '#chart1', // HTML 元素綁定
+  data: {
+    type: 'pie',
+    columns: [
+      ['Louvre 雙人床架', 1],
+      ['Antony 雙人床架', 2],
+      ['Anty 雙人床架', 3],
+      ['其他', 4],
+    ],
+    colors: {
+      'Louvre 雙人床架': '#6a8eae',
+      'Antony 雙人床架': '#dddace',
+      'Anty 雙人床架': '#80ab82',
+      其他: '#423e3b',
+    },
+  },
+});
+
+// eslint-disable-next-line no-unused-vars
+const chart2 = c3.generate({
+  bindto: '#chart2', // HTML 元素綁定
+  data: {
+    type: 'pie',
+    columns: [
+      ['Louvre 雙人床架', 1],
+      ['Antony 雙人床架', 2],
+      ['Anty 雙人床架', 3],
+      ['其他', 4],
+    ],
+    colors: {
+      'Louvre 雙人床架': '#585123',
+      'Antony 雙人床架': '#aca691',
+      'Anty 雙人床架': '#eec170',
+      其他: '#d36135',
+    },
+  },
+});
 
 getOrderList();
